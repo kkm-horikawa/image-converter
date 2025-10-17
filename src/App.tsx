@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ConversionOptions from './components/ConversionOptions';
 import FileUploadZone from './components/FileUploadZone';
 import PreviewSection from './components/PreviewSection';
+import Toast from './components/Toast';
 
 export interface ConversionSettings {
   width: number;
@@ -10,11 +11,17 @@ export interface ConversionSettings {
   backgroundColor: string;
 }
 
+interface ToastState {
+  message: string;
+  type: 'error' | 'success' | 'info';
+}
+
 function App() {
   const [svgFile, setSvgFile] = useState<File | null>(null);
   const [svgDataUrl, setSvgDataUrl] = useState<string>('');
   const [svgContent, setSvgContent] = useState<string>('');
   const [pngDataUrl, setPngDataUrl] = useState<string>('');
+  const [toast, setToast] = useState<ToastState | null>(null);
   const [settings, setSettings] = useState<ConversionSettings>({
     width: 512,
     height: 512,
@@ -127,7 +134,10 @@ function App() {
 
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      alert('SVG の変換に失敗しました。ファイルの形式を確認してください。');
+      setToast({
+        message: 'SVG の変換に失敗しました。ファイルの形式を確認してください。',
+        type: 'error',
+      });
     };
 
     img.src = url;
@@ -192,6 +202,7 @@ function App() {
           </>
         )}
       </div>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 }
