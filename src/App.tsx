@@ -105,6 +105,9 @@ function App() {
       }
     }
 
+    // Ensure width and height are integers
+    width = Math.round(width);
+    height = Math.round(height);
     // SVGをBlobに変換してからImageに読み込む
     const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
